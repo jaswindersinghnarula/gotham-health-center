@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String        @id @default(uuid())
+  email          String        @unique
+  firstName      String?
+  lastName       String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+  role           Role          @default(PATIENT)
+  docAppointment Appointment[] @relation("doctors")
+  petAppointment Appointment[] @relation("petients")
+  Login          Login?
+  Appointment    Appointment[]
+  Detail         Detail?
+}
+
+model Login {
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @unique
+  password    String?
+  jwtToken    String?   @unique
+  lastLoginAt DateTime?
+}
+
+model Detail {
+  avatar        String?
+  bio           String?
+  qualification String?
+  user          User    @relation(fields: [userId], references: [id])
+  userId        String  @unique
+}
+
+model Appointment {
+  id        String    @id @default(uuid())
+  doctor    User      @relation("doctors", fields: [doctorId], references: [id])
+  doctorId  String
+  petient   User      @relation("petients", fields: [petientId], references: [id])
+  petientId String
+  dateTime  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  creator   User?     @relation(fields: [createdBy], references: [id])
+  createdBy String?
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  PATIENT
+  GUEST
+}

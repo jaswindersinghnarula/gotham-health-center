@@ -1,0 +1,12 @@
+services:
+  ghcdb:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: cEPzAiiwN4XZQBwusuxT
+    volumes:
+      - "D:/Projects/gotham-health-center/Database/data:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+  # volumes:
+  #   pgdata:
